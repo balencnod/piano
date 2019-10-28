@@ -1,0 +1,160 @@
+data segment
+    
+    pkey db "press any key...$"
+data ends    
+
+stack segment
+    dw   128  dup(0)
+stack ends
+
+code segment
+ASSUME CS:CODE,DS:data
+
+start:
+
+    mov ax, data
+    mov ds, ax
+    ;调整端口
+    mov dx,28bh
+    mov al,10000000b
+    out dx,al
+lo: 
+    mov dx,288h
+    mov al,00h
+    out dx,al
+    ;关闭声音 
+
+    mov dx,283h
+    mov al,00110110b
+    out dx,al
+    ;准备工作，调整端口
+    mov ah,01h
+    int 21h
+    mov dl,'z'
+    cmp al, dl
+    mov bx,131
+    jz jp2
+    mov dl,'x'
+    cmp al, dl
+    mov bx,147
+    jz jp2
+    mov dl,'c'
+    cmp al, dl
+    mov bx,165
+    jz jp2
+    mov dl,'v'
+    cmp al, dl
+    mov bx,175
+    jz jp2
+    mov dl,'b'
+    cmp al, dl
+    mov bx,196
+    jz jp2
+    mov dl,'n'
+    cmp al, dl
+    mov bx,220
+    jz jp2
+    mov dl,'m'
+    cmp al, dl
+    mov bx,247
+    jz jp2
+    mov dl,'a'
+    cmp al, dl
+    mov bx,262
+    jz jp2
+    mov dl,'s'
+    cmp al, dl
+    mov bx,294
+    jz jp2
+    mov dl,'d'
+    cmp al, dl
+    mov bx,330
+    jz so
+    mov dl,'f'
+    cmp al, dl
+    mov bx,349
+    jz so
+    mov dl,'g'
+    cmp al, dl
+    mov bx,392
+    jz so
+    jmp nex 
+jp2:jmp so    
+nex: mov dl,'h'
+    cmp al, dl
+    mov bx,440
+    jz so
+    mov dl,'j'
+    cmp al, dl
+    mov bx,494
+    jz so
+    mov dl,'q'
+    cmp al, dl
+    mov bx,524
+    jz so
+    mov dl,'w'
+    cmp al, dl
+    mov bx,587
+    jz so
+    mov dl,'e'
+    cmp al, dl
+    mov bx,659
+    jz so
+    mov dl,'r'
+    cmp al, dl
+    mov bx,698
+    jz so
+    mov dl,'t'
+    cmp al, dl
+    mov bx,784
+    jz so
+    mov dl,'y'
+    cmp al, dl
+    mov bx,880
+    jz so
+    mov dl,'u'
+    cmp al, dl
+    mov bx,988
+    jz so
+    mov dl,0dh
+    cmp al,dl
+    jz ed
+    
+    jmp lo    
+    
+ed: 
+    mov dx,288h
+    mov al,00h
+    out dx,al
+    ;关闭声音        
+    mov ax, 4c00h
+    int 21h
+so:  
+    
+    mov dx,288h
+    mov al,03h
+    out dx,al
+    ;打开声音
+    mov ax,2870h
+    mov dx,12h
+    div bx
+    ;调整频率
+    mov dx,280h
+    out dx,al
+    mov al,ah
+    mov dx,280h
+    out dx,al
+    call yanshi;延时功能                   
+    jmp lo  
+yanshi proc
+    mov cx,20h
+    mov dx,0000h
+    mov ah,86h
+    mov al,0
+    int 15h
+    ret
+yanshi endp    
+                     
+code ends
+
+end start
